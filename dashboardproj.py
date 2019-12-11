@@ -65,7 +65,7 @@ app.layout = html.Div(children = [
                 html.Div(className = 'row', children = [
                     html.Div(className = 'col-4',children= [
                         html.P(f'Y1'),
-                        dcc.Dropdown(id= f'y-axis-1', value = f'Publisher',
+                        dcc.Dropdown(id= f'y-axis-1', value = f'Rank',
                             options= [
                                 {'label': i, 'value': i} for i in df.select_dtypes('number').columns
                             ]
@@ -73,7 +73,7 @@ app.layout = html.Div(children = [
                     ]),
                     html.Div(className = 'col-4',children= [
                         html.P(f'Y2'),
-                        dcc.Dropdown(id= f'y-axis-2', value = f'Platform',
+                        dcc.Dropdown(id= f'y-axis-2', value = f'Global_Sales',
                             options= [
                                 {'label': i, 'value': i} for i in df.select_dtypes('number').columns
                             ]
@@ -81,9 +81,9 @@ app.layout = html.Div(children = [
                     ]),
                     html.Div(className = 'col-4',children= [
                         html.P(f'X'),
-                        dcc.Dropdown(id= f'y-axis-3', value = f'Global_Sales',
+                        dcc.Dropdown(id= f'y-axis-3', value = f'Publisher',
                             options= [
-                                {'label': i, 'value': i} for i in ['Global_Sales','NA_Sales','EU_Sales','JP_Sales','Other_Sales']
+                                {'label': i, 'value': i} for i in ['Publisher','Platform','Name']
                             ]
                         )
                     ])
@@ -111,16 +111,16 @@ app.layout = html.Div(children = [
         html.Div(children = dcc.Graph(
             id = 'graph-scatter',
             figure = {'data':[go.Scatter(
-                x= df[df['Global_Sales']==i]['Rank'],
-                y= df[df['Global_Sales']==i]['Global_Sales'],
-                text= df[df['Global_Sales']==i]['Rank'],
+                x= df[df['Global_Sales']==i]['Publisher'],
+                y= df[df['Global_Sales']==i]['Rank'],
+                text= df[df['Global_Sales']==i]['Publisher'],
                 mode='markers',
                 name= f'{i}'    
             ) for i in df['Global_Sales'].unique()
             ],
                 'layout':go.Layout(
-                    xaxis= {'title':'Rank'},
-                    yaxis = {'title' : 'Publisher'},
+                    xaxis= {'title':'Publisher'},
+                    yaxis = {'title' : 'Rank'},
                     hovermode = 'closest'
                 )
             }
@@ -201,12 +201,12 @@ def create_pie_chart(pie):
     [State(component_id='table-dropdown',component_property='value')]
 )
 
-def update_data(n_clicks,global_sales):
-    if fuel_type == 'All':
-        df = df.to_dict('records')
+def update_data(n_clicks,platform):
+    if platform == 'All':
+        df1 = df.to_dict('records')
     else:
-        df = df[df['Global_Sales']==Global_Sales].to_dict('records')
-    return df
+        df1 = df[df['Platform']==platform].to_dict('records')
+    return df1
 
 @app.callback(
     Output(component_id= 'dataTable', component_property= 'page_size'),
